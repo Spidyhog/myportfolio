@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Priyanshu Mittal - Software Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* A very light grey background */
+            color: #2E2E2E; /* SlateGrey from resume */
+        }
+        .classic-blue { color: #3994BE; }
+        .slate-grey { color: #2E2E2E; }
+        .light-grey { color: #666666; }
+        .empha { color: #2E2E2E; font-weight: 700; }
+
+        /* Animation for scroll-in effect */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 18px;
+            top: 20px;
+            bottom: 20px;
+            width: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+        }
+        .timeline-dot {
+            position: absolute;
+            left: 10px;
+            top: 20px;
+            height: 20px;
+            width: 20px;
+            background-color: #3994BE;
+            border: 4px solid #f8fafc;
+            border-radius: 50%;
+            z-index: 10;
+        }
+        /* Modal Styles */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3994BE;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        /* Style for bullet points */
+        .job-content ul {
+            list-style-type: disc;
+            padding-left: 1.25rem; /* 20px */
+        }
+        .job-content li {
+            margin-bottom: 0.75rem; /* 12px */
+        }
+        /* Game Styles */
+        #gameCanvas {
+            background: #1e293b; /* Dark Slate background */
+            display: block;
+            margin: 0 auto;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        #messageText {
+            background: -webkit-linear-gradient(45deg, #3994BE, #ec4899, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Gemini Modal -->
+    <div id="gemini-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 hidden">
+        <!-- Overlay -->
+        <div class="modal-overlay fixed inset-0 bg-black bg-opacity-50" onclick="closeModal()"></div>
+        <!-- Content -->
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-2xl transform scale-95 opacity-0">
+            <div class="p-6">
+                <div class="flex justify-between items-center border-b pb-3">
+                    <h3 id="modal-title" class="text-xl font-bold slate-grey">✨ AI Generated Content</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                    </button>
+                </div>
+                <div id="modal-body" class="mt-4 prose max-w-none">
+                    <!-- Loader -->
+                    <div id="modal-loader" class="flex justify-center items-center h-48">
+                        <div class="loader"></div>
+                    </div>
+                    <!-- Content will be injected here -->
+                    <div id="modal-text-content" class="text-sm light-grey leading-relaxed"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="max-w-4xl mx-auto p-4 sm:p-6 md:p-8">
+
+        <!-- Header Section -->
+        <header class="text-center md:text-left md:flex justify-between items-center mb-16">
+            <div>
+                <h1 class="text-4xl md:text-5xl font-extrabold slate-grey">Priyanshu Mittal</h1>
+                <p class="mt-2 text-lg md:text-xl light-grey">Software Engineer | Backend & Distributed Systems</p>
+            </div>
+            <div class="mt-6 md:mt-0 flex justify-center md:justify-end space-x-6 text-2xl">
+                <a href="mailto:priyanshu.mittal9@gmail.com" class="light-grey hover:classic-blue transition-colors" title="Email">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </a>
+                <a href="https://github.com/priyanshumittal" target="_blank" class="light-grey hover:classic-blue transition-colors" title="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>
+                </a>
+            </div>
+        </header>
+
+        <!-- About & Skills Section -->
+        <section class="mb-16">
+             <h2 class="text-3xl font-bold slate-grey mb-6 border-b-2 border-gray-200 pb-2">About Me</h2>
+             <p class="text-base light-grey leading-relaxed mb-8">
+                Software Engineer with 4 years of experience specializing in building high-throughput, low-latency backend systems for the FinTech sector. Proven ability to deliver scalable solutions for products serving over 500M+ users. Expert in Java, Python, and distributed systems, with a strong record of architecting features that drive user engagement and massive performance gains.
+             </p>
+
+             <h3 class="text-2xl font-bold slate-grey mb-4">Technical Skills</h3>
+             <div class="space-y-4">
+                 <div>
+                    <h4 class="font-bold text-md mb-2">Languages</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Python</span>
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">Java</span>
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">JavaScript</span>
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">C++</span>
+                        <span class="bg-blue-100 text-blue-800 text-sm font-medium px-3 py-1 rounded-full">SQL</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-md mb-2">Backend</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Django</span>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Flask</span>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Kafka</span>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">RabbitMQ</span>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Celery</span>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Node.js</span>
+                        <span class="bg-green-100 text-green-800 text-sm font-medium px-3 py-1 rounded-full">Dropwizard</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-md mb-2">Frontend</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">ReactJS</span>
+                        <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">NextJS</span>
+                        <span class="bg-purple-100 text-purple-800 text-sm font-medium px-3 py-1 rounded-full">VueJS</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-md mb-2">Databases & Caching</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full">PostgreSQL</span>
+                        <span class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full">MySQL</span>
+                        <span class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full">MongoDB</span>
+                        <span class="bg-yellow-100 text-yellow-800 text-sm font-medium px-3 py-1 rounded-full">Aerospike</span>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="font-bold text-md mb-2">Tools & DevOps</h4>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">AWS</span>
+                        <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">Docker</span>
+                        <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">Jenkins</span>
+                        <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">Debezium</span>
+                    </div>
+                </div>
+             </div>
+        </section>
+
+        <!-- Experience Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold slate-grey mb-8 border-b-2 border-gray-200 pb-2">Experience</h2>
+            <div class="relative timeline">
+                
+                <!-- Job Entry: PhonePe -->
+                <div class="mb-12 pl-12 relative reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-bold classic-blue">PhonePe</h3>
+                                <p class="font-semibold slate-grey">Software Engineer</p>
+                            </div>
+                            <p class="text-sm light-grey text-right">April 2022 - Present<br>Bengaluru, India</p>
+                        </div>
+                        <div class="job-content mt-4 text-sm light-grey">
+                            <ul>
+                                <li>Architected a configuration-driven system for the Ads Platform to ingest and transform partner data, automating operations and significantly reducing TAT for resolving <span class="empha">1P vs 3P</span> data discrepancies.</li>
+                                <li>Owned the core backend design for the Earn Platform, enabling brands to leverage PhonePe's <span class="empha">500M+ user base</span> for targeted campaigns with <span class="empha">20-50% lower CAC</span>.</li>
+                                <li>Spearheaded development of a low-latency feed for the Earn platform, slashing P95 latency by <span class="empha">90% (600ms to 80ms)</span> via an <span class="empha">Aerospike</span> caching strategy.</li>
+                                <li>Engineered the 'Task Attempts' service in <span class="empha">Java</span> to handle <span class="empha">1000 RPS</span> and pioneered a real-time ETL pipeline using <span class="empha">Python & Kafka</span> which cut DB CPU utilization from <span class="empha">98% to 5%</span>.</li>
+                            </ul>
+                        </div>
+                        <!-- Gemini Buttons -->
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center gap-4">
+                             <button onclick="handleGeminiAction(this, 'summary')" class="flex items-center gap-2 text-sm light-grey hover:classic-blue transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M12 4h.01"></path><path d="M4 12h.01"></path><path d="M20 12h.01"></path><path d="M18.36 18.36h.01"></path><path d="M5.64 18.36h.01"></path><path d="M18.36 5.64h.01"></path><path d="M5.64 5.64h.01"></path></svg>
+                                ✨ Summarize Impact
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Entry: GigIndia -->
+                <div class="mb-12 pl-12 relative reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start">
+                           <div>
+                                <h3 class="text-xl font-bold classic-blue">GigIndia</h3>
+                                <p class="font-semibold slate-grey">Software Development Engineer 1</p>
+                            </div>
+                            <p class="text-sm light-grey text-right">June 2021 - March 2022<br>Pune, India</p>
+                        </div>
+                        <div class="job-content mt-4 text-sm light-grey">
+                             <ul>
+                                <li>Enhanced customer experience by implementing robust CRM systems and automated reporting using <span class="empha">Python, Django, Celery, and PostgreSQL</span>, slashing reporting TAT by <span class="empha">50%</span>.</li>
+                                <li>Reduced API latency from <span class="empha">500ms to under 80ms</span> through strategic DB indexing, code optimizations, and caching in the Django backend.</li>
+                             </ul>
+                        </div>
+                         <!-- Gemini Buttons -->
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center gap-4">
+                             <button onclick="handleGeminiAction(this, 'summary')" class="flex items-center gap-2 text-sm light-grey hover:classic-blue transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M12 4h.01"></path><path d="M4 12h.01"></path><path d="M20 12h.01"></path><path d="M18.36 18.36h.01"></path><path d="M5.64 18.36h.01"></path><path d="M18.36 5.64h.01"></path><path d="M5.64 5.64h.01"></path></svg>
+                                ✨ Summarize Impact
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Entry: RedCarpetUp -->
+                <div class="pl-12 relative reveal">
+                    <div class="timeline-dot"></div>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <h3 class="text-xl font-bold classic-blue">RedCarpetUp</h3>
+                                <p class="font-semibold slate-grey">Full Stack Developer Intern</p>
+                            </div>
+                            <p class="text-sm light-grey text-right">June 2020 - March 2021<br>New Delhi, India</p>
+                        </div>
+                        <div class="job-content mt-4 text-sm light-grey">
+                            <ul>
+                                <li>Developed, maintained, and scaled the main company website built on <span class="empha">NextJS</span>, directly leading to a <span class="empha">125% increase</span> in organic traffic by optimizing SEO.</li>
+                                <li>Contributed to the launch of two new card products (<span class="empha">Reset and Rebel</span>) by building and scaling features in the in-house customer service software using <span class="empha">ReactJS and Django</span>.</li>
+                            </ul>
+                        </div>
+                         <!-- Gemini Buttons -->
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex items-center gap-4">
+                             <button onclick="handleGeminiAction(this, 'summary')" class="flex items-center gap-2 text-sm light-grey hover:classic-blue transition-colors">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h.01"></path><path d="M12 4h.01"></path><path d="M4 12h.01"></path><path d="M20 12h.01"></path><path d="M18.36 18.36h.01"></path><path d="M5.64 18.36h.01"></path><path d="M18.36 5.64h.01"></path><path d="M5.64 5.64h.01"></path></svg>
+                                ✨ Summarize Impact
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+        
+        <!-- Education Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold slate-grey mb-6 border-b-2 border-gray-200 pb-2">Education</h2>
+            <div class="reveal">
+                <h3 class="text-lg font-bold slate-grey">B.Tech. in Computer Science</h3>
+                <p class="light-grey">Jaypee University of Enginnering and Technology, Guna</p>
+                <p class="text-sm light-grey">2017 - 2021</p>
+            </div>
+        </section>
+
+        <!-- Hobbies Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold slate-grey mb-6 border-b-2 border-gray-200 pb-2">Hobbies & Interests</h2>
+            <div class="reveal grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div class="flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 classic-blue"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                    <p class="font-semibold">Writing</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 classic-blue"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>
+                    <p class="font-semibold">Exploring Tech</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 classic-blue"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                    <p class="font-semibold">Travelling</p>
+                </div>
+                <div class="flex flex-col items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="mb-2 classic-blue"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.59a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                    <p class="font-semibold">Trekking</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Game Section -->
+        <section class="mb-8">
+            <h2 class="text-3xl font-bold slate-grey mb-6 border-b-2 border-gray-200 pb-2">Just for Fun</h2>
+            <div class="reveal text-center">
+                <p class="light-grey mb-4">A little something I built. Use your mouse to control the paddle.</p>
+                <div class="relative inline-block">
+                    <canvas id="gameCanvas" width="480" height="320"></canvas>
+                    <div id="gameMessage" class="hidden absolute inset-0 bg-slate-800 bg-opacity-80 flex flex-col justify-center items-center rounded-lg pointer-events-none">
+                        <h3 id="messageText" class="text-5xl font-extrabold text-center"></h3>
+                        <button id="restartButton" class="mt-4 px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition-colors pointer-events-auto">Play Again</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-sm light-grey mt-16">
+            <p>&copy; 2024 Priyanshu Mittal. Designed with care.</p>
+        </footer>
+
+    </div>
+
+    <script>
+        // --- Scroll Animation Logic ---
+        const revealElements = document.querySelectorAll('.reveal');
+        const scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+        revealElements.forEach(el => scrollObserver.observe(el));
+
+        // --- Modal Logic ---
+        const modal = document.getElementById('gemini-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalLoader = document.getElementById('modal-loader');
+        const modalTextContent = document.getElementById('modal-text-content');
+
+        function openModal() {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.querySelector('.modal-overlay').classList.remove('opacity-0');
+                modal.querySelector('.modal-content').classList.remove('scale-95', 'opacity-0');
+            }, 10);
+        }
+
+        function closeModal() {
+            modal.querySelector('.modal-overlay').classList.add('opacity-0');
+            modal.querySelector('.modal-content').classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // --- Gemini API Logic ---
+        async function callGemini(prompt) {
+            const apiKey = ""; // API key is handled by the environment
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+            
+            const payload = {
+                contents: [{
+                    role: "user",
+                    parts: [{ text: prompt }]
+                }]
+            };
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`API call failed with status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    return result.candidates[0].content.parts[0].text
+                        .replace(/\* /g, '<br>&#8226; ')
+                        .replace(/\n/g, '<br>');
+                } else {
+                    return "Sorry, I couldn't generate a response. The result was empty.";
+                }
+            } catch (error) {
+                console.error("Gemini API call error:", error);
+                return "An error occurred while contacting the AI. Please check the console for details.";
+            }
+        }
+
+        async function handleGeminiAction(button, action) {
+            const jobCard = button.closest('.bg-white');
+            const jobContent = jobCard.querySelector('.job-content').innerText;
+            
+            let prompt = '';
+            let title = '';
+
+            if (action === 'summary') {
+                title = '✨ AI Generated Impact Summary';
+                prompt = `Summarize the key achievements and impact from this job description in a short, professional paragraph for a cover letter or LinkedIn profile:\n\n---\n${jobContent}`;
+            } else {
+                return; // Do nothing if action is not 'summary'
+            }
+
+            modalTitle.innerText = title;
+            modalTextContent.innerHTML = '';
+            modalLoader.style.display = 'flex';
+            openModal();
+
+            const resultText = await callGemini(prompt);
+            modalLoader.style.display = 'none';
+            modalTextContent.innerHTML = resultText;
+        }
+        
+        // --- Brick Breaker Game Logic ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const gameMessage = document.getElementById('gameMessage');
+        const messageText = document.getElementById('messageText');
+        const restartButton = document.getElementById('restartButton');
+
+        // Game variables
+        let ballRadius = 8;
+        let x, y, dx, dy;
+        
+        let paddleHeight = 10;
+        let paddleWidth = 80;
+        let paddleX;
+        
+        let rightPressed = false;
+        let leftPressed = false;
+
+        let brickRowCount = 4;
+        let brickColumnCount = 6;
+        let brickWidth = 60;
+        let brickHeight = 15;
+        let brickPadding = 10;
+        let brickOffsetTop = 40;
+        let brickOffsetLeft = 30;
+        
+        const brickColors = ["#ec4899", "#f59e0b", "#84cc16", "#3b82f6"];
+
+        let score;
+        let lives;
+        let bricks = [];
+        let animationFrameId;
+        let gameStarted = false;
+
+        function initGame() {
+            x = canvas.width / 2;
+            y = canvas.height - 30;
+            dx = 2; // Slower speed
+            dy = -2; // Slower speed
+            paddleX = (canvas.width - paddleWidth) / 2;
+            score = 0;
+            lives = 3;
+            initBricks();
+        }
+
+        function initBricks() {
+            bricks = [];
+            for(let c=0; c<brickColumnCount; c++) {
+                bricks[c] = [];
+                for(let r=0; r<brickRowCount; r++) {
+                    bricks[c][r] = { x: 0, y: 0, status: 1, color: brickColors[r % brickColors.length] };
+                }
+            }
+        }
+        
+        function restartGame() {
+            gameMessage.classList.add('hidden');
+            initGame();
+            if (animationFrameId) {
+                cancelAnimationFrame(animationFrameId);
+            }
+            draw();
+        }
+
+        // Event Listeners
+        document.addEventListener("keydown", keyDownHandler, false);
+        document.addEventListener("keyup", keyUpHandler, false);
+        document.addEventListener("mousemove", mouseMoveHandler, false);
+        restartButton.addEventListener("click", restartGame);
+
+        function keyDownHandler(e) {
+            if(e.key == "Right" || e.key == "ArrowRight") rightPressed = true;
+            else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = true;
+        }
+
+        function keyUpHandler(e) {
+            if(e.key == "Right" || e.key == "ArrowRight") rightPressed = false;
+            else if(e.key == "Left" || e.key == "ArrowLeft") leftPressed = false;
+        }
+        
+        function mouseMoveHandler(e) {
+            const rect = canvas.getBoundingClientRect();
+            let relativeX = e.clientX - rect.left;
+            if(relativeX > 0 && relativeX < canvas.width) {
+                paddleX = relativeX - paddleWidth / 2;
+                if (paddleX < 0) paddleX = 0;
+                if (paddleX + paddleWidth > canvas.width) paddleX = canvas.width - paddleWidth;
+            }
+        }
+
+        function collisionDetection() {
+            for(let c=0; c<brickColumnCount; c++) {
+                for(let r=0; r<brickRowCount; r++) {
+                    let b = bricks[c][r];
+                    if(b.status == 1) {
+                        if(x > b.x && x < b.x+brickWidth && y > b.y && y < b.y+brickHeight) {
+                            dy = -dy;
+                            b.status = 0;
+                            score++;
+                            if(score == brickRowCount*brickColumnCount) {
+                                messageText.innerHTML = "You Win!<br>Congratulations!";
+                                gameMessage.classList.remove('hidden');
+                                cancelAnimationFrame(animationFrameId);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+            ctx.fillStyle = "#22d3ee"; // Bright cyan
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawPaddle() {
+            ctx.beginPath();
+            ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
+            ctx.fillStyle = "#f8fafc"; // Off-white
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        function drawBricks() {
+            for(let c=0; c<brickColumnCount; c++) {
+                for(let r=0; r<brickRowCount; r++) {
+                    if(bricks[c][r].status == 1) {
+                        let brickX = (c*(brickWidth+brickPadding))+brickOffsetLeft;
+                        let brickY = (r*(brickHeight+brickPadding))+brickOffsetTop;
+                        bricks[c][r].x = brickX;
+                        bricks[c][r].y = brickY;
+                        ctx.beginPath();
+                        ctx.rect(brickX, brickY, brickWidth, brickHeight);
+                        ctx.fillStyle = bricks[c][r].color;
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+        }
+        
+        function drawScore() {
+            ctx.font = "16px Inter";
+            ctx.fillStyle = "#94a3b8"; // Lighter text for dark bg
+            ctx.fillText("Score: "+score, 8, 24);
+        }
+
+        function drawLives() {
+            ctx.font = "16px Inter";
+            ctx.fillStyle = "#94a3b8";
+            ctx.fillText("Lives: "+lives, canvas.width-65, 24);
+        }
+        
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            drawBricks();
+            drawBall();
+            drawPaddle();
+            drawScore();
+            drawLives();
+            collisionDetection();
+
+            if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) dx = -dx;
+            
+            if(y + dy < ballRadius) {
+                dy = -dy;
+            } else if(y + dy > canvas.height-ballRadius) {
+                if(x > paddleX && x < paddleX + paddleWidth) { // <<< FIX IS HERE
+                    dy = -dy;
+                }
+                else {
+                    lives--;
+                    if(!lives) {
+                        messageText.innerText = "Game Over";
+                        gameMessage.classList.remove('hidden');
+                        cancelAnimationFrame(animationFrameId);
+                    }
+                    else {
+                        x = canvas.width/2;
+                        y = canvas.height-30;
+                        dx = 2;
+                        dy = -2;
+                        paddleX = (canvas.width-paddleWidth)/2;
+                    }
+                }
+            }
+            
+            if(rightPressed && paddleX < canvas.width-paddleWidth) paddleX += 7;
+            else if(leftPressed && paddleX > 0) paddleX -= 7;
+            
+            x += dx;
+            y += dy;
+            animationFrameId = requestAnimationFrame(draw);
+        }
+        
+        // --- Game Start Observer ---
+        const gameObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting && !gameStarted) {
+                    gameStarted = true;
+                    setTimeout(() => {
+                        initGame();
+                        draw();
+                    }, 1500); // 1.5 second delay
+                    gameObserver.unobserve(canvas); // Only trigger once
+                }
+            });
+        }, { threshold: 0.5 }); // Start when 50% of canvas is visible
+
+        gameObserver.observe(canvas);
+
+
+    </script>
+
+</body>
+</html>
